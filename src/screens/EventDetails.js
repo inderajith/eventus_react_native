@@ -3,9 +3,7 @@ import {Text, View, StyleSheet, Image} from 'react-native'
 import { Title,Paragraph, Button   } from 'react-native-paper';
 import { MaterialIcons, Ionicons  } from '@expo/vector-icons';
 
-const EventDetails = ({ route, navigation}) => {
-    console.log('route: ', route);
-    console.log('navigation: ', navigation);
+const EventDetails = ({ route, navigation}) => {        
 
     const {date, time, title, description} = route.params 
     

@@ -1,9 +1,13 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import { Text, View, StyleSheet, ScrollView} from 'react-native'
 import MyCard from '../components/MyCard'
+import {authContext} from '../contexts/authContext'
 
 
 const EventScreen = ({navigation}) => {
+
+    const {isVerified, setIsVerified} = useContext(authContext)    
+
 
     const dummyDetails = [
         {
@@ -50,7 +54,7 @@ const EventScreen = ({navigation}) => {
     }, [])
 
     return(
-        <ScrollView style={{backgroundColor:'#f5f5f5', flex:1,  paddingHorizontal:20, paddingTop:20}}  showsHorizontalScrollIndicator={false} >                            
+        <ScrollView style={{backgroundColor:'#f5f5f5', flex:1,  paddingHorizontal:20, paddingTop:20}}  showsHorizontalScrollIndicator={false} >            
             { details.map(({date, time, title, description}) => <MyCard key={title} fav="false" date={date} time={time} title={title} description={description} navigation={navigation} />) }
             <View style={{height:60}}></View>
         </ScrollView>

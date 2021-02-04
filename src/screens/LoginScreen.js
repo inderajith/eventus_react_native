@@ -1,18 +1,27 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import { View, StyleSheet} from 'react-native'
 import { MaterialIcons , MaterialCommunityIcons  } from '@expo/vector-icons';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input, Text, Button } from 'react-native-elements';
+import {authContext} from '../contexts/authContext'
+import {Snackbar} from 'react-native-paper'
+
 
 function LoginScreen({navigation}) {
 
-    const [mail, setMail] = useState('')
-    const [password, setPassword] = useState('')
+    const [mail, setMail] = useState('inder@gmail.com')
+    const [password, setPassword] = useState('inder')
+    const [visible, setVisible] = useState(false);
+
+    const onToggleSnackBar = () => setVisible(!visible);
+    const onDismissSnackBar = () => setVisible(false);
+
+    const {signin} = useContext(authContext)
     
 
     const submitLogin = () => {
-        console.log('mail: ', mail);        
-        console.log('password: ', password);        
+        signin(mail, password)
+        onToggleSnackBar()
+        
     }
 
     return (
@@ -23,7 +32,7 @@ function LoginScreen({navigation}) {
             <Input
                 label="Enter ur mailId"
                 labelStyle={{color:'#3399ff'}}
-                leftIcon={<MaterialIcons  name="email" size={24} color="#3399ff" />}                
+                leftIcon={<MaterialIcons  name="email" size={24} color="#3399ff" />}                                
                 placeholder='example@gmail.com'
                 errorStyle={{ color: 'red' }}
                 errorMessage=''
@@ -46,6 +55,18 @@ function LoginScreen({navigation}) {
                 buttonStyle={styles.btn}
                 onPress={submitLogin}
             />
+
+            <Snackbar                
+                visible={visible}
+                onDismiss={onDismissSnackBar}
+                action={{
+                label: 'Undo',
+                onPress: () => {
+                    // Do something
+                },
+                }}>
+                Login successful
+            </Snackbar>
 
         </View>
     )

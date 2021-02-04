@@ -46,10 +46,12 @@ const ChangePasswordScreen = ({navigation}) => {
                 style={{marginBottom:20}}
                 theme={{ colors: { primary: '#3399ff'}}}  
                 
-            />            
+            />
+
             <Button mode="contained" style={{width:100,position:'relative', left:220, top:20, backgroundColor:'#3399ff'}} onPress={() => onToggleSnackBar()}>
                 Change
             </Button>
+            
             <Snackbar
                 style={{ marginBottom:100, marginLeft:50,width:320}}
                 visible={visible}
