@@ -10,7 +10,7 @@ function VerificationScreen() {
 
 
     return (        
-            isVerified ?  <EventTabNavigator />  : <MainStackNavigator />                
+            isVerified ?   <EventTabNavigator /> :<MainStackNavigator />  
     )
 }
 

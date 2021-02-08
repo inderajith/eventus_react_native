@@ -1,7 +1,7 @@
 import React, {useState, useContext} from 'react'
 import { View, StyleSheet} from 'react-native'
-import { MaterialIcons , MaterialCommunityIcons  } from '@expo/vector-icons';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { MaterialIcons , MaterialCommunityIcons, Ionicons, FontAwesome5   } from '@expo/vector-icons';
+import DropDownPicker from 'react-native-dropdown-picker';
 import { Input, Text, Button } from 'react-native-elements';
 import {authContext} from '../contexts/authContext'
 import {Snackbar} from 'react-native-paper'
@@ -14,6 +14,7 @@ function RegistrationScreen({navigation}) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [interest, setInterests] = useState(''); 
     const [usernameValidation, setUsernameValidation] = useState('')
     const [emailValidation, setEmailValidation] = useState('')
     const [passwordValidation, setPasswordValidation] = useState('')
@@ -39,7 +40,7 @@ function RegistrationScreen({navigation}) {
            }
 
            if(isValidated){
-               signup(username, email, password)
+               signup(username, email, password, interest)
                onToggleSnackBar()
            }
     }
@@ -70,6 +71,7 @@ function RegistrationScreen({navigation}) {
             setUsernameValidation('username should not be empty')
             setIsValidated(false)       
         }
+        
         setTimeout(() => {
             setUsernameValidation('')
         }, 3000)
@@ -105,6 +107,27 @@ function RegistrationScreen({navigation}) {
                 errorMessage={emailValidation}
                 errorStyle={{ color: 'red' }}
                 onFocus={() => setEmailValidation('')}
+            />
+            <Text>Interested in :</Text>
+            <DropDownPicker
+                labelStyle={{color:'grey'}}                
+                items={[
+                    {label: 'coding', value: 'coding', icon: () => <FontAwesome5 name="laptop-code" size={24} color="black" />},
+                    {label: 'gaming', value: 'gaming', icon: () => <Ionicons name="ios-game-controller-outline" size={24} color="black" />},
+                    {label: 'conference', value: 'conference', icon: () => <Ionicons name="newspaper-outline" size={24} color="black" />}
+                ]}
+                defaultValue={'coding'}
+                containerStyle={{height: 40}}
+                style={{backgroundColor: '#fafafa'}}
+                itemStyle={{
+                    justifyContent: 'flex-start'
+                }}
+                dropDownStyle={{backgroundColor: '#fafafa'}}
+                onChangeItem={item => {                                    
+                    setInterests(item.value)}}
+                activeLabelStyle={{color:'#3399ff'}}
+                
+                
             />
             
             <Input 

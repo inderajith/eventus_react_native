@@ -1,19 +1,33 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import { View, StyleSheet} from 'react-native'
 import {Text, Title, TextInput, Button, Snackbar  } from 'react-native-paper'
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Ionicons, FontAwesome5  } from '@expo/vector-icons';
+import {authContext} from '../contexts/authContext'
+
 
 const SettingsScreen = ({navigation}) => {
 
-    const [name, setName] = useState('Inder');
-    const [interests, setInterests] = useState('gaming');
+    const {getProfileData, settingsData, updateProfile} = useContext(authContext)
+    const {username, email, interest} = settingsData
+
+    useEffect(() => {
+        getProfileData()
+    }, [])
+
+    const [userName, setUserName] = useState(username);
+    const [interests, setInterests] = useState(interest);    
     const [showBtn, setShowBtn] = useState(true);
     const [visible, setVisible] = useState(false);
 
     const onToggleSnackBar = () => setVisible(!visible);
     const onDismissSnackBar = () => setVisible(false);
     const type = "outlined"
+
+    const updateSettings = () => {
+        updateProfile(interests,userName)
+        onToggleSnackBar()
+    }
 
     return(
         <View style={styles.container}>
@@ -22,7 +36,7 @@ const SettingsScreen = ({navigation}) => {
             
             <TextInput
                 label="Email"
-                value="inderajithinder@gmail.com"                
+                value={email}                
                 mode={type}
                 disabled
                 style={{marginBottom:20}}
@@ -30,8 +44,10 @@ const SettingsScreen = ({navigation}) => {
             />
             <TextInput
                 label="Name"
-                value={name}
-                onChangeText={e => setName(e)}
+                autoFocus={true}
+                value={userName}
+                defaultValue={username}
+                onChangeText={e => setUserName(e)}
                 mode={type}
                 style={{marginBottom:20}}
                 theme={{ colors: { primary: '#3399ff'}}}
@@ -45,7 +61,7 @@ const SettingsScreen = ({navigation}) => {
                     {label: 'gaming', value: 'gaming', icon: () => <Ionicons name="ios-game-controller-outline" size={24} color="black" />},
                     {label: 'conference', value: 'conference', icon: () => <Ionicons name="newspaper-outline" size={24} color="black" />}
                 ]}
-                defaultValue={interests}
+                defaultValue={interest}                
                 containerStyle={{height: 40}}
                 style={{backgroundColor: '#fafafa'}}
                 itemStyle={{
@@ -64,7 +80,7 @@ const SettingsScreen = ({navigation}) => {
             <Text style={styles.text} onPress={() => navigation.navigate('ChangePassword')}>Do you like to change password</Text>
             {
                 showBtn 
-                ? ( <Button mode="contained" style={{width:100,position:'relative', left:220, top:20, backgroundColor:'#3399ff'}} onPress={() => onToggleSnackBar()}>
+                ? ( <Button mode="contained" style={{width:100,position:'relative', left:220, top:20, backgroundColor:'#3399ff'}} onPress={() => updateSettings()}>
                     Update
                 </Button> ) 
                 : null
