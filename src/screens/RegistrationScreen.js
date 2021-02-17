@@ -1,6 +1,6 @@
 import React, {useState, useContext} from 'react'
 import { View, StyleSheet} from 'react-native'
-import { MaterialIcons , MaterialCommunityIcons, Ionicons, FontAwesome5   } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons,Entypo, MaterialCommunityIcons   } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Input, Text, Button } from 'react-native-elements';
 import {authContext} from '../contexts/authContext'
@@ -107,22 +107,23 @@ function RegistrationScreen({navigation}) {
                 errorMessage={emailValidation}
                 errorStyle={{ color: 'red' }}
                 onFocus={() => setEmailValidation('')}
-            />
-            <Text>Interested in :</Text>
+            />            
+            <Text style={{color:"#3399ff", position:'relative',marginLeft:18, right:130, fontSize:16, fontWeight:'bold'}}>Interestes</Text>
             <DropDownPicker
                 labelStyle={{color:'grey'}}                
-                items={[
-                    {label: 'coding', value: 'coding', icon: () => <FontAwesome5 name="laptop-code" size={24} color="black" />},
-                    {label: 'gaming', value: 'gaming', icon: () => <Ionicons name="ios-game-controller-outline" size={24} color="black" />},
-                    {label: 'conference', value: 'conference', icon: () => <Ionicons name="newspaper-outline" size={24} color="black" />}
+                items={[                
+                    {label: 'conferences', value: 'conferences', icon: () => <Ionicons name="newspaper-outline" size={24} color="black" />},
+                    {label: 'Awareness', value: 'daylight-savings,airport-delays,severe-weather,disasters,terror,health-warnings', icon: () => <Entypo name="awareness-ribbon" size={24} color="black" />},                    
+                    {label: 'concerts', value: 'concerts', icon: () => <Ionicons name="musical-notes" size={24} color="black" />},
+                    {label: 'festivals', value: 'school-holidays,public-holidays,festivals', icon: () => <MaterialCommunityIcons name="party-popper" size={24} color="black" />},  
                 ]}
-                defaultValue={'coding'}
-                containerStyle={{height: 40}}
+                defaultValue={'conferences'}
+                containerStyle={{flexDirection:'row', marginLeft:10}}
                 style={{backgroundColor: '#fafafa'}}
                 itemStyle={{
                     justifyContent: 'flex-start'
                 }}
-                dropDownStyle={{backgroundColor: '#fafafa'}}
+                dropDownStyle={{backgroundColor: '#fafafa', minHeight:180}}
                 onChangeItem={item => {                                    
                     setInterests(item.value)}}
                 activeLabelStyle={{color:'#3399ff'}}

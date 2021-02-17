@@ -2,23 +2,30 @@ import React, {useState, useEffect, useContext} from 'react'
 import { View, StyleSheet} from 'react-native'
 import {Text, Title, TextInput, Button, Snackbar  } from 'react-native-paper'
 import DropDownPicker from 'react-native-dropdown-picker';
-import { Ionicons, FontAwesome5  } from '@expo/vector-icons';
+import { Ionicons,Entypo, MaterialCommunityIcons    } from '@expo/vector-icons';
 import {authContext} from '../contexts/authContext'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
 
 
 const SettingsScreen = ({navigation}) => {
 
-    const {getProfileData, settingsData, updateProfile} = useContext(authContext)
+    const {getProfileData, settingsData, updateProfile, setIsVerified} = useContext(authContext)
     const {username, email, interest} = settingsData
 
     useEffect(() => {
-        getProfileData()
-    }, [])
+        const unsubscribe = navigation.addListener('focus', () => {
+            getProfileData()
+            console.log('settings page rendered');                  
+        })        
+
+        return unsubscribe
+    }, [navigation])
 
     const [userName, setUserName] = useState(username);
     const [interests, setInterests] = useState(interest);    
     const [showBtn, setShowBtn] = useState(true);
-    const [visible, setVisible] = useState(false);
+    const [visible, setVisible] = useState(false);    
 
     const onToggleSnackBar = () => setVisible(!visible);
     const onDismissSnackBar = () => setVisible(false);
@@ -32,6 +39,16 @@ const SettingsScreen = ({navigation}) => {
     return(
         <View style={styles.container}>
 
+        <Button 
+            mode="contained" 
+            style={{backgroundColor:'red', width:90, position:'absolute', right:20, top:30}} 
+            onPress={() => {
+                AsyncStorage.removeItem('email')
+                setIsVerified(false)
+
+                }}>
+            Logout
+        </Button>
             <Title style={styles.title}>SETTINGS</Title>
             
             <TextInput
@@ -56,10 +73,11 @@ const SettingsScreen = ({navigation}) => {
 
             <DropDownPicker
                 labelStyle={{color:'grey'}}                
-                items={[
-                    {label: 'coding', value: 'coding', icon: () => <FontAwesome5 name="laptop-code" size={24} color="black" />},
-                    {label: 'gaming', value: 'gaming', icon: () => <Ionicons name="ios-game-controller-outline" size={24} color="black" />},
-                    {label: 'conference', value: 'conference', icon: () => <Ionicons name="newspaper-outline" size={24} color="black" />}
+                items={[                
+                    {label: 'conferences', value: 'conferences', icon: () => <Ionicons name="newspaper-outline" size={24} color="black" />},
+                    {label: 'Awareness', value: 'daylight-savings,airport-delays,severe-weather,disasters,terror,health-warnings', icon: () => <Entypo name="awareness-ribbon" size={24} color="black" />},                    
+                    {label: 'concerts', value: 'concerts', icon: () => <Ionicons name="musical-notes" size={24} color="black" />},
+                    {label: 'festivals', value: 'school-holidays,public-holidays,festivals', icon: () => <MaterialCommunityIcons name="party-popper" size={24} color="black" />},  
                 ]}
                 defaultValue={interest}                
                 containerStyle={{height: 40}}
@@ -67,7 +85,7 @@ const SettingsScreen = ({navigation}) => {
                 itemStyle={{
                     justifyContent: 'flex-start'
                 }}
-                dropDownStyle={{backgroundColor: '#fafafa'}}
+                dropDownStyle={{backgroundColor: '#fafafa', minHeight:180}}
                 onChangeItem={item => {                                    
                     setInterests(item.value)}}
                 onClose={() => setShowBtn(true)}
@@ -81,16 +99,16 @@ const SettingsScreen = ({navigation}) => {
             {
                 showBtn 
                 ? ( <Button mode="contained" style={{width:100,position:'relative', left:220, top:20, backgroundColor:'#3399ff'}} onPress={() => updateSettings()}>
-                    Update
+                    Update  
                 </Button> ) 
                 : null
             }
             <Snackbar
                 style={{ marginBottom:100, marginLeft:70,width:300}}
                 visible={visible}
+                duration={1000}
                 onDismiss={onDismissSnackBar}
-                action={{
-                label: 'Undo',
+                action={{                
                 onPress: () => {
                     // Do something
                 },

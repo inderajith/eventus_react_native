@@ -4,34 +4,47 @@ import axios from 'axios'
 
 export const eventContext = React.createContext()
 
-export default ({children}) => {
 
+export default ({children}) => {
     const {baseUrl, myEmail} = useContext(authContext);
 
     const [fetched, setFetched] = useState('inder')
     const [eventDetails, setEventDetails] = useState([])
     const [wishlist, setWishlist] = useState([])
-    const [msg, setMsg] = useState('')
+    const [wishlistID, setWishlistID] = useState([])
+    const [message, setMessage] = useState('')
+    const [showSnackbar, setShowSnackbar] = useState(false)
+    const [keywords, setKeywords] = useState('')
+    const [startDate, setStartDate] = useState('2021-02-17')
+    const [endDate, setEndDate] = useState('2021-03-01')
+    const [country, setCountry] = useState('CJB')
+    const [category, setCategory] = useState('conferences,school-holidays,public-holidays,observances,politics,expos,concerts,festivals,performing-arts,sports,community,daylight-savings,airport-delays,severe-weather,disasters,terror,health-warnings')
+
     const event = []
 
-    useEffect(() => {
+    const getEvents = () => {        
         const accessToken = 'KAUdGmbj1DI-f24IcTFEzx1OEdsjULyMTECKSCbW'
         axios.get('https://api.predicthq.com/v1/events/',
             {
                 headers:{'Authorization':'Bearer ' + accessToken},
                 params:{
-                    'place.scope':'CJB',
-                    'category':'conferences'
+                    'place.scope':country,                    
+                    'category':category,
+                    'q':keywords,
+                    'start.gte':startDate,
+                    'start.lte':'2024-01-01'
+                    
                 }
             }
         )
         .then((response) => {            
-            const data = response.data.results
+            const data = response.data.results                              
             data.map(item => {
                 const id = item.id 
                 const title = item.title                 
                 const description = item.description.length < 5 ? "No description available" : item.description
-                const location = item.location
+                const latitude = item.location[0]
+                const longitude = item.location[1]
                 const date = item.start.slice(0, 10) 
                 const time = item.start.slice(11, 19) == '00:00:00' ? "" : item.start.slice(11, 19)
                 let address = "";
@@ -50,23 +63,34 @@ export default ({children}) => {
                     time,
                     address,
                     name,
+                    latitude,
+                    longitude,
                     from:"PredictHQ"           
                 }
                 // setEventDetails((prev) => [...prev, eventData ])
                 event.push(eventData)                
-            })            
-            setEventDetails(event)
+            })                
+                    setEventDetails(event)
+                    getWishlistID()
+                    console.log('event api fired:----------')                                     
         })
         .catch((err) => {
             console.log('err in predicthq request: ', err);
         })
+    }    
+        
+            
+    const getWish = () => {
+        axios.get(`${baseUrl}/wishlist/${myEmail}`)
+        .then((response)=>{
+            setWishlist(response.data.wishlists)
+        })
+        .catch(err => {
+            console.log('err in  get wishlist eventcontext: ' , err);
+        })
+    }
 
-        // return () => {
-        //     console.log('unmounted');
-        // }
-    },[])
-
-    const myWishlist = (date, time, title, description, from, address, name, id) => {
+    const myWishlist = (date, time, title, description, from, address, name, id, urlID, latitude, longitude, cb, setMyMessage) => {
 
         const wishlistData = {
             id,
@@ -77,79 +101,83 @@ export default ({children}) => {
             from, 
             address,
             name,
+            urlID,
+            latitude,
+            longitude,
             myEmail
         }
-        
-            axios.post(`${baseUrl}/wishlist`, wishlistData)
-             .then((response) => {
-                 const msg = response.data.msg 
-                 console.log('msg: ', msg);
-                //  setMsg(msg)                 
-             })
-             .catch((err) => {
-                 console.log('err in add wishlist: ', err);
-                //  setMsg('failed to add wishlist')
-             })        
-    }
-
-
-    const getWish = () => {
-        axios.get(`${baseUrl}/wishlist/${myEmail}`)
-             .then((response)=>{
-                 setWishlist(response.data.wishlists)
-             })
-             .catch(err => {
-                 console.log('err in pass mail' , err);
-             })
+    
+        axios.post(`${baseUrl}/wishlist`, wishlistData)
+        .then((response) => {
+            const {msg, action} = response.data 
+            setMyMessage(msg)
+            cb()
+            getWishlistID()
+        })
+        .catch((err) => {
+            console.log('err in add wishlist eventcontext: ', err);                                 
+            })
     }
     
+          
+    
+    const deleteWish = (id, cb, setMyMessage) => {
+        axios.delete(`${baseUrl}/wishlist/${myEmail}/${id}`)
+        .then((response) => {
+            const {msg, action} = response.data 
+            setMyMessage(msg)
+            cb()
+            getWish()
+            getWishlistID()
+            
+        })
+        .catch(err => {
+            console.log('err in delete wishlist eventcontext: ' , err);
+        })
+    }
+
+
+    const getWishlistID = () => {                
+        axios.get(`${baseUrl}/wishlist/${myEmail}`)
+        .then((response)=>{
+            const arrayID = []
+            response.data.wishlists.map(item => {
+                arrayID.push(item.urlID)
+            })
+            setWishlistID(arrayID)
+        })
+        .catch(err => {
+            console.log('err in  get wishlist ID eventcontext : ' , err);
+        })
+    }
+
+    const fetchDate = () => {
+        return new Promise((resolve, reject) => {
+            let todayDate = new Date().toISOString().split('T')[0]
+            setStartDate(todayDate)            
+            resolve()
+        })
+    }
+
+
+    useEffect(() => {                
+        
+        fetchDate()
+            .then(() => {           
+                getWishlistID()
+                setTimeout(() => {
+                    getEvents()
+                }, 2000)
+                
+            })
+        // return () => {
+        //     console.log('unmounted');
+        // }
+    },[])
 
     return(
-        <eventContext.Provider value={{eventDetails, fetched, msg, setMsg, myWishlist,getWish,wishlist}}>
+        <eventContext.Provider value={{eventDetails, fetched, keywords,category,message,showSnackbar, startDate, endDate, country ,setKeywords, setStartDate,setEndDate,setEventDetails, setCountry, setCategory, getEvents, myWishlist,getWish,getEvents, deleteWish,wishlist, getWishlistID, wishlistID}}>
             {children}
         </eventContext.Provider>
     )
 }
-
-
-//https://control.predicthq.com/search/events/geqpewyWCnRDUJQRxA
-
-
-// Object {
-//     "aviation_rank": 100,
-//     "brand_safe": true,
-//     "category": "public-holidays",
-//     "country": "IN",
-//     "description": "Easter Sunday commemorates Jesus Christ’s resurrection, according to Christian belief.",
-//     "duration": 86399,
-//     "entities": Array [],
-//     "first_seen": "2019-09-04T17:56:43Z",
-//     "id": "gGN9KDgBp2WWa43tnF",
-//     "labels": Array [
-//       "holiday",
-//       "holiday-national",
-//     ],
-//     "local_rank": null,
-//     "location": Array [
-//       78.96288,
-//       20.593684,
-//     ],
-//     "phq_attendance": null,
-//     "place_hierarchies": Array [
-//       Array [
-//         "6295630",
-//         "6255147",
-//         "1269750",
-//       ],
-//     ],
-//     "rank": 90,
-//     "relevance": 1,
-//     "scope": "country",
-//     "start": "2021-04-04T00:00:00Z",
-//     "state": "active",
-//     "timezone": null,
-//     "title": "Easter Day",
-//     "updated": "2021-02-06T00:04:53Z",
-//   },
-// ],
-// }

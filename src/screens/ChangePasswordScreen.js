@@ -1,19 +1,39 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import { View, StyleSheet} from 'react-native'
 import {Text, Title, TextInput, Button, Snackbar } from 'react-native-paper'
+import {authContext} from '../contexts/authContext'
 
 const ChangePasswordScreen = ({navigation}) => {
 
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [confirmPasswordValidation, setConfirmPasswordValidation] = useState(false);
     const [visible, setVisible] = useState(false);
+
+    const {changePassword} = useContext(authContext)
 
   const onToggleSnackBar = () => setVisible(!visible);
 
   const onDismissSnackBar = () => setVisible(false);
     
     const type = "outlined"
+
+
+    const submitPassword = () => {
+        if(newPassword === confirmPassword){
+            changePassword(oldPassword, newPassword)
+            onToggleSnackBar()
+            setOldPassword('')
+            setNewPassword('')
+            setConfirmPasswordValidation('')
+        }else{
+            setConfirmPasswordValidation(true)
+            setTimeout(() => {
+                setConfirmPasswordValidation(false)
+            }, 3000)
+        }
+    }
 
     return(
         <View style={styles.container}>
@@ -27,6 +47,7 @@ const ChangePasswordScreen = ({navigation}) => {
                 mode={type}
                 style={{marginBottom:20}}
                 theme={{ colors: { primary: '#3399ff'}}}
+                autoFocus={true}
                 
             />
             <TextInput
@@ -36,6 +57,7 @@ const ChangePasswordScreen = ({navigation}) => {
                 mode={type}
                 style={{marginBottom:20}}
                 theme={{ colors: { primary: '#3399ff'}}}
+                error={confirmPasswordValidation}
                 
             />
             <TextInput
@@ -44,11 +66,11 @@ const ChangePasswordScreen = ({navigation}) => {
                 onChangeText={e => setConfirmPassword(e)}
                 mode={type}
                 style={{marginBottom:20}}
-                theme={{ colors: { primary: '#3399ff'}}}  
-                
+                theme={{ colors: { primary: '#3399ff'}}}                                  
+                error={confirmPasswordValidation}                
             />
 
-            <Button mode="contained" style={{width:100,position:'relative', left:220, top:20, backgroundColor:'#3399ff'}} onPress={() => onToggleSnackBar()}>
+            <Button mode="contained" style={{width:100,position:'relative', left:220, top:20, backgroundColor:'#3399ff'}} onPress={() => submitPassword()}>
                 Change
             </Button>
             
@@ -57,7 +79,6 @@ const ChangePasswordScreen = ({navigation}) => {
                 visible={visible}
                 onDismiss={onDismissSnackBar}
                 action={{
-                label: 'Undo',
                 onPress: () => {
                     // Do something
                 },

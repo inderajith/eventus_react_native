@@ -1,62 +1,262 @@
 import React, {useState, useEffect, useContext} from 'react'
-import { Text, View, StyleSheet, ScrollView} from 'react-native'
+import { Text, View, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native'
 import MyCard from '../components/MyCard'
 import {authContext} from '../contexts/authContext'
 import {eventContext} from '../contexts/eventContext'
-import {Snackbar} from 'react-native-paper'
-
+import {Searchbar, Button, Divider, Snackbar } from 'react-native-paper'
+import { Entypo, FontAwesome, MaterialCommunityIcons  } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import DropDownPicker from 'react-native-dropdown-picker';
+import MySpinner from '../components/MySpinner'
+// import DatePicker from 'react-native-datepicker'
+// import { Dropdown } from 'react-native-material-dropdown';
+// import {Picker} from '@react-native-picker/picker';
 
 
 const EventScreen = ({navigation}) => {
 
     const {isVerified, setIsVerified} = useContext(authContext)
-    const { eventDetails, fetched, msg, setMsg} = useContext(eventContext)
+    const { eventDetails,wishlistID, fetched, myWishlist, keywords,getEvents, startDate, endDate, country, category ,setKeywords, setStartDate,setEndDate, setCountry,setCategory, getWishlistID} = useContext(eventContext) 
+    
+    const [details, setDetails ] = useState([])
+    const [filter, setFilter] = useState(false)
+    const [filterText, setFilterText] = useState(true)
+    const [showBtn, setShowBtn] = useState(true);
+    const [dropStyle, setDropStyle] = useState(false);
+    const [date, setDate] = useState(new Date());      
+    const [show, setShow] = useState(false);
+    const [showSpinner, setShowSpinner] = useState(true);
     
     
-    const dummyDetails = [
-        {
-            date:'Fri, Nov 27, 2020',
-            time: '12:00 AM',
-            title:'An begginer on guide to how to start with js',
-            description:'this is an example for an detaield description about the event which is going to be held in the date provided at the right time. So dont miss it , kudos man haha'
-        }
-        
-    ]
-    const [details, setDetails] = useState([]);    
-    const [visible, setVisible] = useState(false);
+   
 
-    const onToggleSnackBar = () => setVisible(!visible);
-    const onDismissSnackBar = () => setVisible(false);
+    
+    
+    const showDatepicker = () => {
+        setShow(true); 
+    };
+    
+    const submitFilter = () => {
+        console.log('category: ', category);
+        console.log('country: ', country);
+        console.log('endDate: ', endDate);
+        console.log('startDate: ', startDate);
+        console.log('keywords: ', keywords);
+        onToggleSnackBar()
+        getEvents()
+    }
+    const dateChange = (event, selectedDate) => {        
+        const currentDate = selectedDate || date;
+        // setShow(Platform.OS === 'ios');
+        setShow(false);
+        setDate(currentDate);        
+        const formattedDate = currentDate.toISOString().slice(0,10)
+        setStartDate(formattedDate)        
+
+
+      };
+
+      const [visible, setVisible] = useState(false);
+      const onToggleSnackBar = () => setVisible(!visible);
+      const onDismissSnackBar = () => setVisible(false);
+
+
+    const showFilters = () => {
+        return(
+            <View style={{minHeight: dropStyle ? 350 : 200}}>   
+                <Snackbar
+                    style={{position:'relative',top:400,left:40, width:250}}                
+                    visible={visible}
+                    onDismiss={onDismissSnackBar}
+                    duration={100}
+                    action={{                
+                    onPress: () => {
+                        // Do something
+                    },
+                    }}>
+                    Filters have been applied
+                </Snackbar>             
+                <Searchbar
+                    placeholder="Search"
+                    value={keywords}
+                    onChangeText={val => setKeywords(val)}
+                />
+
+                <View style={{marginTop:20, flexDirection:'row', justifyContent:'space-around', alignItems:'center'}}>                                                 
+                    <Button mode="outlined" style={{width:120,  }} labelStyle={{color:"#3399ff"}} onPress={() => showDatepicker()}>
+                                    Pick a date
+                    </Button>
+                    <Text>{startDate}</Text>
+                    {show && (
+                        <DateTimePicker                    
+                        value={date}
+                        mode='date'                    
+                        minimumDate={new Date()}                    
+                        onChange={dateChange}
+                        is24Hour={true}
+                        display="default"                                            
+                        />
+                    )}
+                </View>
+                
+                <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'flex-end'}}>
+                <View style={{ marginTop:20, width:150}}>
+                <Text style={{color:'#c9c9c9', marginBottom:4, marginLeft:2}}>Category</Text>
+                <DropDownPicker
+                labelStyle={{color:'grey'}}                
+                items={[
+                    {label: 'All', value: 'conferences,school-holidays,public-holidays,observances,politics,expos,concerts,festivals,performing-arts,sports,community,daylight-savings,airport-delays,severe-weather,disasters,terror,health-warnings'},
+                    {label: 'Awareness', value: 'daylight-savings,airport-delays,severe-weather,disasters,terror,health-warnings'},
+                    {label: 'conferences', value: 'conferences'},
+                    {label: 'concerts', value: 'concerts'},
+                    {label: 'festivals', value: 'school-holidays,public-holidays,festivals'},                    
+                    
+
+                ]}
+                defaultValue='conferences,school-holidays,public-holidays,observances,politics,expos,concerts,festivals,performing-arts,sports,community,daylight-savings,airport-delays,severe-weather,disasters,terror,health-warnings'
+                containerStyle={{height: 40}}
+                style={{backgroundColor: '#fafafa'}}
+                itemStyle={{
+                    justifyContent: 'flex-start'                    
+                }}
+                dropDownStyle={{backgroundColor: '#fafafa', minHeight:150}}
+                onChangeItem={item => {                                    
+                    setCategory(item.value)
+                    }}
+                activeLabelStyle={{color:'#3399ff'}}
+                onClose={() => {                    
+                    setDropStyle(false)
+                    setFilterText(true)
+                    }}
+                onOpen={() => {                    
+                    setDropStyle(true)
+                    setFilterText(false)
+                    }}                                
+                />
+                </View>
+
+                <View style={{ width:150}}>
+                <Text style={{color:'#c9c9c9', marginBottom:4, marginLeft:2}}>Place</Text>
+                <DropDownPicker
+                labelStyle={{color:'grey'}}                
+                items={[
+                    {label: 'Bangalore', value: 'BOM'},
+                    {label: 'Ariyalur', value: 'ALU'},
+                    {label: 'Coimbatore', value: 'CJB'},                    
+                    {label: 'Delhi', value: 'DEL'},                    
+                    {label: 'Kerala', value: 'TRV'},
+                    {label: 'Sydney', value: 'YQY'},
+                    
+
+                ]}
+                defaultValue={'CJB'}                
+                containerStyle={{height: 40}}
+                style={{backgroundColor: '#fafafa'}}
+                itemStyle={{
+                    justifyContent: 'flex-start'                                    
+                }}
+                dropDownStyle={{backgroundColor: '#fafafa', minHeight:180}}
+                onChangeItem={item => {                                    
+                    setCountry(item.value)
+                    }}
+                activeLabelStyle={{color:'#3399ff'}}
+                onClose={() => {
+                    setShowBtn(true)
+                    setFilterText(true)
+                    setDropStyle(false)
+                    }}
+                onOpen={() => {
+                    setShowBtn(false)
+                    setFilterText(false)
+                    setDropStyle(true)
+                    }}
+                
+                />
+                </View>
+                </View>
+
+                
+                {
+                    showBtn ? (
+                                <Button mode="contained" style={{width:100, marginTop:20, marginLeft:240, backgroundColor:'#3399ff' }} labelStyle={{color:"white"}} onPress={() => submitFilter()}>
+                                    search
+                                </Button>
+                              )
+                            : (<View style={{height:10, position:'relative'}}><Text></Text></View>)
+                }
+                
+                {
+                    filterText ? (<Text onPress={() => setFilter(!filter)} style={{color:'#c9c9c9', position:'absolute', bottom:5}}><MaterialCommunityIcons name="filter-minus" size={24} color="#c9c9c9"/>Hide filter</Text>)
+                               : null 
+                }
+
+            </View>
+        )
+    }
 
 
     useEffect(() => {
-        setDetails(eventDetails)
-            
-    }, [])
+        setTimeout(() => {
+            if(eventDetails.length == 0)
+                setShowSpinner(false)
     
-    // if(msg != ""){
-    //     onToggleSnackBar()
-    //     setTimeout(() => {
-    //         setMsg('')
-    //     }, 7000)
-    // }
+        }, 5000)
+    
+        const unsubscribe = navigation.addListener('focus', () => {
+            setDetails(eventDetails)        
+            getWishlistID()            
+            getEvents();
+            console.log('event screen mounted');
+        })
+        
+        return unsubscribe
+            
+    }, [navigation, wishlistID])
+    
+
+    let myIcon = (<FontAwesome name="heart-o" size={24} onPress={() => console.log('szdxcfgvbh nj')} color="red" style={{marginLeft:20}} />)
+    
 
     return(
         <ScrollView style={{backgroundColor:'#f5f5f5', flex:1,  paddingHorizontal:20, paddingTop:20}}  showsHorizontalScrollIndicator={false} >                        
-            { details.map(({id, date, time, title, description, from, address, name}) => <MyCard key={id} fav="false" address={address} name={name} date={date} time={time} title={title} description={description} from={from}  navigation={navigation} />) }
+            
+            <View  style={{minHeight:20, backgroundColor:'white', paddingVertical:10, paddingHorizontal:15, shadowColor:'grey', shadowOpacity:1, shadowOffset:10}}>
+                {
+                    filter ? showFilters()
+                           : <Text style={{color:'grey'}} onPress={() => setFilter(!filter)} > <FontAwesome name="filter" size={24} color="grey" />Show filters</Text> 
+                }       
+                
+            </View>
+            {/* <Divider style={{marginTop:20, zIndex:-3}}/> */}
+            <View style={{ position:'relative', zIndex:-1}}>            
+            {   eventDetails.length == 0 
+                        ? showSpinner ?  <MySpinner height={500} /> : <Text style={{color:'#3399ff', marginLeft:30, marginTop:300, fontSize:25, fontWeight:'bold', textAlign:'center', marginRight:60}}>No events Founds</Text>
+                        : eventDetails.map(({id, date, time, title, description, from, address, name, latitude, longitude}) => 
+                                        (
+                                            <MyCard 
+                                                key={id} 
+                                                urlID={id}
+                                                fav={myIcon} 
+                                                address={address} 
+                                                name={name} 
+                                                date={date} 
+                                                time={time} 
+                                                title={title} 
+                                                description={description} 
+                                                from={from}  
+                                                navigation={navigation}   
+                                                latitude={latitude}
+                                                longitude={longitude}
+                                                showIcon={false}       
+                                            />
+                                        )
+                                    ) 
+                
+            }
+            </View>
+            
             <View style={{height:60}}></View>
-            <Snackbar
-                style={{ marginBottom:100, marginLeft:70,width:300}}
-                visible={visible}
-                onDismiss={onDismissSnackBar}
-                action={{
-                label: 'Undo',
-                onPress: () => {
-                    // Do something
-                },
-                }}>
-                {msg}
-            </Snackbar>
+            
         </ScrollView>
     )
 }

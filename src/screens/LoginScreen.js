@@ -9,7 +9,7 @@ import {Snackbar} from 'react-native-paper'
 function LoginScreen({navigation}) {
 
     const [mail, setMail] = useState('inder@gmail.com')
-    const [password, setPassword] = useState('inder')
+    const [password, setPassword] = useState('inder123')
     const [visible, setVisible] = useState(false);
 
     const onToggleSnackBar = () => setVisible(!visible);
