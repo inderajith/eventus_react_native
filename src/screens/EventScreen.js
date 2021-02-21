@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react'
-import { Text, View, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native'
+import { Text, View, StyleSheet, ScrollView, TouchableOpacity, Platform , Animated, Image} from 'react-native'
 import MyCard from '../components/MyCard'
 import {authContext} from '../contexts/authContext'
 import {eventContext} from '../contexts/eventContext'
@@ -213,13 +213,20 @@ const EventScreen = ({navigation}) => {
             
     }, [navigation, wishlistID])
     
-
-    let myIcon = (<FontAwesome name="heart-o" size={24} onPress={() => console.log('szdxcfgvbh nj')} color="red" style={{marginLeft:20}} />)
+    
+    const scrollY = React.useRef(new Animated.Value(0)).current 
+    const size = 160
     
 
     return(
-        <ScrollView style={{backgroundColor:'#f5f5f5', flex:1,  paddingHorizontal:20, paddingTop:20}}  showsHorizontalScrollIndicator={false} >                        
-            
+        <View style={{backgroundColor:'#f5f5f5', flex:1,  paddingHorizontal:20, paddingVertical:42}}   >                        
+            <Image 
+                source={{uri: 'https://images.pexels.com/photos/2127789/pexels-photo-2127789.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500'}}
+                style={StyleSheet.absoluteFillObject}
+                blurRadius={80}
+                
+
+            />  
             <View  style={{minHeight:20, backgroundColor:'white', paddingVertical:10, paddingHorizontal:15, shadowColor:'grey', shadowOpacity:1, shadowOffset:10}}>
                 {
                     filter ? showFilters()
@@ -228,38 +235,95 @@ const EventScreen = ({navigation}) => {
                 
             </View>
             {/* <Divider style={{marginTop:20, zIndex:-3}}/> */}
-            <View style={{ position:'relative', zIndex:-1}}>            
+            <View style={{ position:'relative', zIndex:1}}>            
             {   eventDetails.length == 0 
                         ? showSpinner ?  <MySpinner height={500} /> : <Text style={{color:'#3399ff', marginLeft:30, marginTop:300, fontSize:25, fontWeight:'bold', textAlign:'center', marginRight:60}}>No events Founds</Text>
-                        : eventDetails.map(({id, date, time, title, description, from, address, name, latitude, longitude}) => 
-                                        (
-                                            <MyCard 
-                                                key={id} 
-                                                urlID={id}
-                                                fav={myIcon} 
-                                                address={address} 
-                                                name={name} 
-                                                date={date} 
-                                                time={time} 
-                                                title={title} 
-                                                description={description} 
-                                                from={from}  
-                                                navigation={navigation}   
-                                                latitude={latitude}
-                                                longitude={longitude}
-                                                showIcon={false}       
+                        : <Animated.FlatList
+                                        onScroll={Animated.event(
+                                            [{nativeEvent: {contentOffset: {y: scrollY}}}],
+                                            {useNativeDriver:true}
+                                        )} 
+                                        showsHorizontalScrollIndicator={false}
+                                        showsVerticalScrollIndicator={false}
+                                       data={eventDetails}
+                                       keyExtractor={item => item._id}                                       
+                                       renderItem={ ({item, index}) => {                                           
+                                                    
+                                                    const inputRange = [
+                                                        -1,
+                                                        0,
+                                                        size*index,
+                                                        size*(index + 2)
+                                                    ]
+                                                    const opacityInputRange = [
+                                                        -1,
+                                                        0,
+                                                        size*index,
+                                                        size*(index + 1)
+                                                    ]
+                                                    const scale = scrollY.interpolate({
+                                                        inputRange,
+                                                        outputRange: [1,1,1,0] 
+                                                    })
+                                                    const opacity = scrollY.interpolate({
+                                                        inputRange:opacityInputRange,
+                                                        outputRange: [1,1,1,0] 
+                                                    })
+                                                    const {id, date, time, title, description, from, address, name, latitude, longitude} = item                                                     
+
+                                                    return (
+                                                        <Animated.View style={{transform:[{scale}], opacity }} >
+                                                        <MyCard 
+                                                            key={id} 
+                                                            urlID={id}                                                 
+                                                            address={address} 
+                                                            name={name} 
+                                                            date={date} 
+                                                            time={time} 
+                                                            title={title} 
+                                                            description={description} 
+                                                            from={from}  
+                                                            navigation={navigation}   
+                                                            latitude={latitude}
+                                                            longitude={longitude}
+                                                            showIcon={false}                                                                                            
+                                                        />
+                                                        </Animated.View>
+                                                            )
+
+                                                    }
+                                                }
                                             />
-                                        )
-                                    ) 
                 
             }
             </View>
             
             <View style={{height:60}}></View>
             
-        </ScrollView>
+        </View>
     )
+
 }
+
+// eventDetails.map(({id, date, time, title, description, from, address, name, latitude, longitude}) => 
+//                                         (
+//                                             <MyCard 
+//                                                 key={id} 
+//                                                 urlID={id}                                                 
+//                                                 address={address} 
+//                                                 name={name} 
+//                                                 date={date} 
+//                                                 time={time} 
+//                                                 title={title} 
+//                                                 description={description} 
+//                                                 from={from}  
+//                                                 navigation={navigation}   
+//                                                 latitude={latitude}
+//                                                 longitude={longitude}
+//                                                 showIcon={false}       
+//                                             />
+//                                         )
+//                                     ) 
 
 const styles = StyleSheet.create({
     container:{        

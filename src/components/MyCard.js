@@ -43,7 +43,13 @@ function MyCard(props) {
     },[ containsID])
     
     return (
-        <Card style={{marginTop:20}} >
+        <Card style={{borderRadius:12, marginTop:20,shadowColor: '#000',
+                                    shadowOffset: { width: 0, height: 10 },
+                                    shadowOpacity: 0.1,
+                                    shadowRadius: 20,
+                                    elevation: 5,
+                                    // backgroundColor:'#f7f7f7'
+                                     }} >
                 <Card.Content>  
                     <Paragraph style={{color: '#a6a6a6'}}>{date} {time}</Paragraph>
                     <Title style={{marginBottom:30, color: '#707070'}}>{title}</Title>
@@ -56,7 +62,7 @@ function MyCard(props) {
                     }>
                     <Text style={{color:'#a6a6a6'}}>Click to know more</Text></Button>                    
                     <Entypo name="share" size={24} color="#3399ff" onPress={shareID} style={{marginLeft:120}} />                                                
-                    <FontAwesome name={showIcon ? "heart" : containsID ? "heart" :"heart-o" } size={24} onPress={showIcon ? deleteWishlist : addWishlist} color="red" style={{marginLeft:20}} />                                                                        
+                    <FontAwesome name={showIcon ? "heart" : containsID ? "heart" :"heart-o" } size={24} onPress={showIcon ? deleteWishlist : addWishlist} color="#1e8dfc" style={{marginLeft:20}} />                                                                        
                 </Card.Actions>
                 <Snackbar
                 style={{position:'relative',top:1,left:30, width:300}}                

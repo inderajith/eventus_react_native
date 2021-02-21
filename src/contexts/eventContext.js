@@ -117,10 +117,10 @@ export default ({children}) => {
         .catch((err) => {
             console.log('err in add wishlist eventcontext: ', err);                                 
             })
+
+        
     }
-    
-          
-    
+                  
     const deleteWish = (id, cb, setMyMessage) => {
         axios.delete(`${baseUrl}/wishlist/${myEmail}/${id}`)
         .then((response) => {

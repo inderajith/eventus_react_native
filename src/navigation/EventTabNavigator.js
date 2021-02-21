@@ -32,7 +32,7 @@ const eventsNavigation = () => {
   return (
     
       <Stack.Navigator initialRouteName='EventsHome'>      
-        <Stack.Screen name="EventsHome" component={EventScreen} options={{ title: 'Events' }}  />
+        <Stack.Screen name="EventsHome" component={EventScreen} options={{ title: 'Events',headerShown:false }}  />
         <Stack.Screen name="EventDetails" component={EventDetails} options={{ title: '' }} />
       </Stack.Navigator>
     
