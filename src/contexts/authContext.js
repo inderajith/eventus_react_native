@@ -10,7 +10,7 @@ export default ({children}) => {
     const [myEmail, setMyEmail] = useState('')
     const [settingsData, setSettingsData] = useState({})
 
-    const baseUrl = 'http://137f9f0490ad.ngrok.io'
+    const baseUrl = 'http://83b7b814edad.ngrok.io'
 
     const signin = (email, password) => {    
 

@@ -13,7 +13,7 @@ const MainStackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Home'>
-        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Home screen' }} />
+        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Home screen', headerShown:false }} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegistrationScreen} />
       </Stack.Navigator>

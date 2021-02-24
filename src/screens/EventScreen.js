@@ -63,7 +63,7 @@ const EventScreen = ({navigation}) => {
 
     const showFilters = () => {
         return(
-            <View style={{minHeight: dropStyle ? 350 : 200}}>   
+            <View style={{ minHeight: dropStyle ? 350 : 200}}>   
                 <Snackbar
                     style={{position:'relative',top:400,left:40, width:250}}                
                     visible={visible}
@@ -83,10 +83,10 @@ const EventScreen = ({navigation}) => {
                 />
 
                 <View style={{marginTop:20, flexDirection:'row', justifyContent:'space-around', alignItems:'center'}}>                                                 
-                    <Button mode="outlined" style={{width:120,  }} labelStyle={{color:"#3399ff"}} onPress={() => showDatepicker()}>
+                    <Button mode="outlined" style={{width:120, borderColor:'#3e7fed'  }} labelStyle={{color:"#3e7fed"}} onPress={() => showDatepicker()}>
                                     Pick a date
                     </Button>
-                    <Text>{startDate}</Text>
+                    <Text style={{color:'white'}}>{startDate}</Text>
                     {show && (
                         <DateTimePicker                    
                         value={date}
@@ -101,7 +101,7 @@ const EventScreen = ({navigation}) => {
                 
                 <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'flex-end'}}>
                 <View style={{ marginTop:20, width:150}}>
-                <Text style={{color:'#c9c9c9', marginBottom:4, marginLeft:2}}>Category</Text>
+                <Text style={{color:'white'||'#c9c9c9', marginBottom:4, marginLeft:2}}>Category</Text>
                 <DropDownPicker
                 labelStyle={{color:'grey'}}                
                 items={[
@@ -136,7 +136,7 @@ const EventScreen = ({navigation}) => {
                 </View>
 
                 <View style={{ width:150}}>
-                <Text style={{color:'#c9c9c9', marginBottom:4, marginLeft:2}}>Place</Text>
+                <Text style={{color:'white'||'#c9c9c9', marginBottom:4, marginLeft:2}}>Place</Text>
                 <DropDownPicker
                 labelStyle={{color:'grey'}}                
                 items={[
@@ -186,7 +186,7 @@ const EventScreen = ({navigation}) => {
                 }
                 
                 {
-                    filterText ? (<Text onPress={() => setFilter(!filter)} style={{color:'#c9c9c9', position:'absolute', bottom:5}}><MaterialCommunityIcons name="filter-minus" size={24} color="#c9c9c9"/>Hide filter</Text>)
+                    filterText ? (<Text onPress={() => setFilter(!filter)} style={{color:'white', position:'absolute', bottom:5}}><MaterialCommunityIcons name="filter-minus" size={24} color="white"/>Hide filter</Text>)
                                : null 
                 }
 
@@ -214,7 +214,7 @@ const EventScreen = ({navigation}) => {
     }, [navigation, wishlistID])
     
     
-    const scrollY = React.useRef(new Animated.Value(0)).current 
+    const scrollY = React.useRef(new Animated.Value(0)).current     
     const size = 160
     
 
@@ -223,14 +223,13 @@ const EventScreen = ({navigation}) => {
             <Image 
                 source={{uri: 'https://images.pexels.com/photos/2127789/pexels-photo-2127789.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500'}}
                 style={StyleSheet.absoluteFillObject}
-                blurRadius={80}
-                
+                blurRadius={80}                
 
             />  
-            <View  style={{minHeight:20, backgroundColor:'white', paddingVertical:10, paddingHorizontal:15, shadowColor:'grey', shadowOpacity:1, shadowOffset:10}}>
+            <View  style={{minHeight:20, backgroundColor:'rgba(255, 255, 255, 0.2)',  paddingVertical:10, paddingHorizontal:15, shadowColor:'grey', shadowOpacity:1, shadowOffset:10}}>
                 {
                     filter ? showFilters()
-                           : <Text style={{color:'grey'}} onPress={() => setFilter(!filter)} > <FontAwesome name="filter" size={24} color="grey" />Show filters</Text> 
+                           : <Text style={{color:'white'}} onPress={() => setFilter(!filter)} > <FontAwesome name="filter" size={24} color="white" />Show filters</Text> 
                 }       
                 
             </View>
@@ -248,7 +247,7 @@ const EventScreen = ({navigation}) => {
                                        data={eventDetails}
                                        keyExtractor={item => item._id}                                       
                                        renderItem={ ({item, index}) => {                                           
-                                                    
+                                                                                               
                                                     const inputRange = [
                                                         -1,
                                                         0,

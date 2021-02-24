@@ -1,61 +1,40 @@
 import React from 'react'
-import { StyleSheet, View, Text } from 'react-native'
-import { Button } from 'react-native-elements';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import * as Animatable from 'react-native-animatable';
-import MapView, {Circle} from 'react-native-maps';
+import { StyleSheet, View, Text, Image } from 'react-native'
+
+import {Button} from 'react-native-elements'
+// import {Button} from 'react-native-paper'
+import { LinearGradient } from 'expo-linear-gradient';
+import Snow from 'react-native-snowflakes';
 
 function HomeScreen({navigation}) {
 
-  const backgroundAnimation = {
-    from:{
-       backgroundColor:'rgb(255,255,255)'
-    },
-    to:{
-       backgroundColor:'rgb(76, 255, 191)'
-    }
- }
+ 
 
   return (
-    <View style={styles.container}>
-      
-      <Button
-        icon={
-          <MaterialCommunityIcons name="login" size={24} color="#3399ff" />
-        }
-        iconRight
-        type="outline"
-        title="login"
-        onPress={() => navigation.navigate('Login') }
-      />
-      {/* <Animatable.Text animation={backgroundAnimation}  duration={4000} delay={2}>
-        <View>
-          <Text>This is title</Text>
+    <View style={styles.container}>                   
+        <View >
+          <LinearGradient
+            // start={{x: 0.0, y: 0.25}} end={{x: 0.5, y: 1.0}}
+            
+            colors={['#011A3C', '#6678B7']}
+            style={{minWidth:150, position:'absolute', top:700, left:150, paddingVertical:10 , borderRadius:4, flex:1, alignItems:'center', justifyContent:'center'}}
+          >
+          <Text onPress={() => navigation.navigate('Login')} style={{color:'#D6E0FC'}}>Login</Text>                      
+        </LinearGradient>
         </View>
-      </Animatable.Text> */}
-      {/* <View>
-      <MapView
-        initialRegion={{
-          latitude: 11.0168,
-          longitude: 76.9558,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        }}
-        style={{height:300, width:400}}
-        
-      >
-        <Circle 
-                center={{
-                  latitude: 11.0168,
-                  longitude: 76.9558
-                }}
-                radius={40}
-                strokeColor="rgba(158, 158, 255, 1.0)"
-                fillColor="rgba(158, 158, 255, 0.3)"
-            />
-      </MapView>
-      </View>
-      <Text>hiiiiiiiiiiii</Text> */}
+        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+          <LinearGradient
+            // start={{x: 0.0, y: 0.25}} end={{x: 0.5, y: 1.0}}
+            
+            
+            colors={['#011A3C', '#6678B7']}
+            style={{minWidth:150, position:'absolute', top:750, left:150, paddingVertical:10, flex:1, alignItems:'center', justifyContent:'center', borderRadius:4}}
+          >
+          <Text onPress={() => navigation.navigate('Register')} style={{color:'#D6E0FC'}}>Register</Text>                      
+        </LinearGradient>
+        </View>
+        <Image style={{width:'100%', height:'100%', zIndex:-222}} source={{uri: 'https://raw.githubusercontent.com/msadura/react-native-snow-bg/d33d0d418add64a2a45304fe14fc4983f509f01e/Example/winterBg.jpg'}}/>
+        <Snow fullScreen snowflakesCount={100} fallSpeed="fast" />
 
     </View>
   )
@@ -63,9 +42,9 @@ function HomeScreen({navigation}) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',    
+    flex: 1,    
+    height:'100%',    
+
   },
   text: {
     color: '#101010',
