@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react'
-import { View, StyleSheet} from 'react-native'
+import { View, StyleSheet, Image} from 'react-native'
 import {Text, Title, TextInput, Button, Snackbar } from 'react-native-paper'
 import {authContext} from '../contexts/authContext'
 
@@ -37,36 +37,43 @@ const ChangePasswordScreen = ({navigation}) => {
 
     return(
         <View style={styles.container}>
+        <Image 
+            source={{uri: 'https://images.pexels.com/photos/2013658/pexels-photo-2013658.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500'}}
+            style={StyleSheet.absoluteFillObject}
+            blurRadius={80}
+
+        /> 
 
             <Title style={styles.title}>Change Password</Title>
 
             <TextInput
-                label="Old Password"
+                label="Old Password"                            
                 value={oldPassword}
                 onChangeText={e => setOldPassword(e)}
                 mode={type}
                 style={{marginBottom:20}}
-                theme={{ colors: { primary: '#3399ff'}}}
-                autoFocus={true}
-                
+                theme={{ colors: { primary: '#6f7070'}}}
+                autoFocus={true}                                
             />
+
             <TextInput
                 label="New Password"
                 value={newPassword}
                 onChangeText={e => setNewPassword(e)}
                 mode={type}
                 style={{marginBottom:20}}
-                theme={{ colors: { primary: '#3399ff'}}}
+                theme={{ colors: { primary: '#6f7070'}}}
                 error={confirmPasswordValidation}
                 
             />
+            
             <TextInput
                 label="Confirm Password"                
                 value={confirmPassword}
                 onChangeText={e => setConfirmPassword(e)}
                 mode={type}
                 style={{marginBottom:20}}
-                theme={{ colors: { primary: '#3399ff'}}}                                  
+                theme={{ colors: { primary: '#6f7070'}}}                                  
                 error={confirmPasswordValidation}                
             />
 

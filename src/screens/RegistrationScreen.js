@@ -1,29 +1,55 @@
-import React, {useState, useContext} from 'react'
-import { View, StyleSheet} from 'react-native'
+import React, {useState,useEffect, useContext, useRef} from 'react'
+import { View, StyleSheet, ImageBackground, Easing} from 'react-native'
 import { MaterialIcons, Ionicons,Entypo, MaterialCommunityIcons   } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Input, Text, Button } from 'react-native-elements';
 import {authContext} from '../contexts/authContext'
 import {Snackbar} from 'react-native-paper'
+import { Animated } from 'react-native';
+
 
 function RegistrationScreen({navigation}) {
 
-    const {signup} = useContext(authContext)
+    const {signup, message} = useContext(authContext)
 
-    const [username, setUsername] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [interest, setInterests] = useState(''); 
+    const [username, setUsername] = useState('add')
+    const [email, setEmail] = useState('A@')
+    const [password, setPassword] = useState('123456')
+    const [confirmPassword, setConfirmPassword] = useState('123456')
+    const [interest, setInterests] = useState('conferences'); 
     const [usernameValidation, setUsernameValidation] = useState('')
     const [emailValidation, setEmailValidation] = useState('')
     const [passwordValidation, setPasswordValidation] = useState('')
     const [confirmPasswordValidation, setConfirmPasswordValidation] = useState('')
     const [isValidated, setIsValidated] = useState(false)
     const [visible, setVisible] = useState(false);
+    const [render, setRender] = useState(0);
+
 
     const onToggleSnackBar = () => setVisible(!visible);
     const onDismissSnackBar = () => setVisible(false);
+    const translateValue = useRef(new Animated.Value(-100)).current 
+
+    const myAnimation = () => {
+        Animated.timing(translateValue, {
+            toValue:0,
+            duration:2000,
+            easing:Easing.bounce,
+            useNativeDriver:true 
+        }).start()    
+    }
+
+    useEffect(() => {        
+
+        const unsubscribe = navigation.addListener('focus', () => {            
+            myAnimation()
+            
+            console.log('registration screen rendered')
+        })        
+
+        return unsubscribe
+
+    }, [navigation])
     
     
 
@@ -40,8 +66,7 @@ function RegistrationScreen({navigation}) {
            }
 
            if(isValidated){
-               signup(username, email, password, interest)
-               onToggleSnackBar()
+               signup(username, email, password, interest, onToggleSnackBar)               
            }
     }
 
@@ -78,7 +103,15 @@ function RegistrationScreen({navigation}) {
     }
 
     return (
-        <View style={styles.container}>
+        <ImageBackground 
+            source={{uri: 'https://images.pexels.com/photos/2013658/pexels-photo-2013658.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500'}}
+            style={StyleSheet.absoluteFillObject}
+            blurRadius={80}
+        > 
+        <Animated.View style={[styles.container, {transform:[{translateY:translateValue}], opacity: translateValue.interpolate({
+            inputRange:[-50, 0],
+            outputRange:[0, 1]
+        })}]}>
 
             <Text style={styles.title}>Sign up</Text>
 
@@ -108,7 +141,7 @@ function RegistrationScreen({navigation}) {
                 errorStyle={{ color: 'red' }}
                 onFocus={() => setEmailValidation('')}
             />            
-            <Text style={{color:"#3399ff", position:'relative',marginLeft:18, right:130, fontSize:16, fontWeight:'bold'}}>Interestes</Text>
+            <Text style={{color:"#3399ff", position:'relative',left:13, fontSize:16, fontWeight:'bold'}}>Interestes</Text>
             <DropDownPicker
                 labelStyle={{color:'grey'}}                
                 items={[                
@@ -155,8 +188,8 @@ function RegistrationScreen({navigation}) {
                 onFocus={() => setConfirmPasswordValidation('')}
                 
             />
-            <Text style={styles.linker} onPress={() => navigation.navigate('Login')}>Already have an account?</Text>
 
+            <Text style={styles.linker} onPress={() => navigation.navigate('Login')}>Already have an account?</Text>
 
             <Button
                 title="Register"
@@ -175,26 +208,31 @@ function RegistrationScreen({navigation}) {
                     // Do something
                 },
                 }}>
-                Registration successful
+                {message}
             </Snackbar>
 
-        </View>
+        </Animated.View>
+        </ImageBackground>
     )
 }
 
 const styles = StyleSheet.create({
     container:{
         marginHorizontal:50,
-        marginBottom:100,
-        flex:1,
-        justifyContent:'center',
-        alignItems:'center'        
+        backgroundColor:'white',
+        marginTop:30,
+        marginBottom:80,
+        paddingHorizontal:15,
+        borderRadius:10,
+        elevation:10,
+        paddingVertical:20
     },    
     title:{
         fontSize:40,
         marginBottom:40,
         color: '#3399ff',
-        fontWeight:'bold'
+        fontWeight:'bold',
+        textAlign:'center'
     },
 
     btn:{    
@@ -204,7 +242,7 @@ const styles = StyleSheet.create({
         marginTop:20            
     },    
     linker:{
-        marginLeft:168,
+        marginLeft:145,
         color: '#a3acb5'
     }
 })

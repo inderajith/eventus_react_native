@@ -1,34 +1,60 @@
-import React, {useState, useContext} from 'react'
-import { View, StyleSheet} from 'react-native'
+import React, {useState, useContext, useEffect, useRef} from 'react'
+import { View, StyleSheet, Image, ImageBackground, Easing} from 'react-native'
 import { MaterialIcons , MaterialCommunityIcons  } from '@expo/vector-icons';
 import { Input, Text, Button } from 'react-native-elements';
 import {authContext} from '../contexts/authContext'
 import {Snackbar} from 'react-native-paper'
-
+import { Animated } from 'react-native';
 
 function LoginScreen({navigation}) {
 
     const [mail, setMail] = useState('inder@gmail.com')
     const [password, setPassword] = useState('inder123')
-    const [visible, setVisible] = useState(false);
+    const [visible, setVisible] = useState(false);        
+    const transformValue = useRef(new Animated.Value(-100)).current 
 
     const onToggleSnackBar = () => setVisible(!visible);
     const onDismissSnackBar = () => setVisible(false);
 
-    const {signin} = useContext(authContext)
+    const {signin, message} = useContext(authContext)
     
 
     const submitLogin = () => {
-        signin(mail, password)
-        onToggleSnackBar()
-        
+        signin(mail, password, onToggleSnackBar)    
     }
 
+    const myAnimation = () => {
+        Animated.timing(transformValue, {
+            toValue:0,
+            duration:1500,
+            easing:Easing.bounce,
+            useNativeDriver:true
+        }).start() 
+    }
+
+    useEffect(() => {                   
+                 
+            const unsubscribe = navigation.addListener('focus', () => {            
+                myAnimation()                
+                console.log('login screen rendered')
+            })        
+    
+            return unsubscribe
+
+    }, [navigation])
+
     return (
-        <View style={styles.container}>
-
-            <Text style={styles.title}>Sign in</Text>
-
+        <View style={{flex:1}}>
+        <ImageBackground 
+            source={{uri: 'https://images.pexels.com/photos/2013658/pexels-photo-2013658.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500'}}
+            style={StyleSheet.absoluteFillObject}
+            blurRadius={80}
+        > 
+        <Animated.View style={[styles.container, {opacity: transformValue.interpolate({
+            inputRange:[-100, 0],
+            outputRange:[0, 1]
+        }), transform:[{translateY:transformValue}]}]}>
+            <Text style={styles.title}>Login</Text>
             <Input
                 label="Enter ur mailId"
                 labelStyle={{color:'#3399ff'}}
@@ -36,7 +62,7 @@ function LoginScreen({navigation}) {
                 placeholder='example@gmail.com'
                 errorStyle={{ color: 'red' }}
                 errorMessage=''
-                onChangeText={value => setMail(value) }
+                onChangeText={value => setMail(value) }                
             />
             
             <Input 
@@ -50,7 +76,7 @@ function LoginScreen({navigation}) {
             <Text style={styles.linker} onPress={() => navigation.navigate('Register')}>Don't have an account?</Text>
 
             <Button
-                title="Login"
+                title="Submit"
                 type="outline"                
                 buttonStyle={styles.btn}
                 onPress={submitLogin}
@@ -65,26 +91,32 @@ function LoginScreen({navigation}) {
                     // Do something
                 },
                 }}>
-                Login successful
+                {message}
             </Snackbar>
-
-        </View>
+            </Animated.View>
+        </ImageBackground>           
+        </View> 
+        
     )
 }
 
 const styles = StyleSheet.create({
     container:{
-        marginHorizontal:50,
-        marginBottom:100,
-        flex:1,
-        justifyContent:'center',
-        alignItems:'center'        
+        marginHorizontal:50,        
+        backgroundColor:"white",
+        marginTop:140,
+        marginBottom:200,
+        borderRadius:10,
+        paddingHorizontal:15,
+        elevation:10,
+        paddingVertical:20        
     },    
     title:{
         fontSize:40,
         marginBottom:40,
         color: '#3399ff',
-        fontWeight:'bold'
+        fontWeight:'bold',
+        textAlign:'center'
     },
 
     btn:{    

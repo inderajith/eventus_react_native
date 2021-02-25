@@ -22,7 +22,7 @@ const settingsNavigation = () => {
   return (
     
       <Stack.Navigator initialRouteName='Settings'>      
-        <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings screen' }} />
+        <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings screen', headerShown:false }} />
         <Stack.Screen name="ChangePassword"  component={ChangePasswordScreen} options={{ title: 'password screen' }} />
       </Stack.Navigator>
     

@@ -65,11 +65,12 @@ const EventScreen = ({navigation}) => {
         return(
             <View style={{ minHeight: dropStyle ? 350 : 200}}>   
                 <Snackbar
-                    style={{position:'relative',top:400,left:40, width:250}}                
-                    visible={visible}
+                    style={{position:'relative',top:14,right:17, width:230}}
+                    visible={visible}                    
                     onDismiss={onDismissSnackBar}
                     duration={100}
-                    action={{                
+                    action={{    
+                        label:'close',            
                     onPress: () => {
                         // Do something
                     },
@@ -83,7 +84,7 @@ const EventScreen = ({navigation}) => {
                 />
 
                 <View style={{marginTop:20, flexDirection:'row', justifyContent:'space-around', alignItems:'center'}}>                                                 
-                    <Button mode="outlined" style={{width:120, borderColor:'#3e7fed'  }} labelStyle={{color:"#3e7fed"}} onPress={() => showDatepicker()}>
+                    <Button mode="outlined" style={{width:120, borderColor:'#d3dff5', borderWidth:2  }} labelStyle={{color:"#d3dff5"}} onPress={() => showDatepicker()}>
                                     Pick a date
                     </Button>
                     <Text style={{color:'white'}}>{startDate}</Text>
@@ -221,12 +222,12 @@ const EventScreen = ({navigation}) => {
     return(
         <View style={{backgroundColor:'#f5f5f5', flex:1,  paddingHorizontal:20, paddingVertical:42}}   >                        
             <Image 
-                source={{uri: 'https://images.pexels.com/photos/2127789/pexels-photo-2127789.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500'}}
+                source={{uri: 'https://images.pexels.com/photos/2013658/pexels-photo-2013658.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500'}}
                 style={StyleSheet.absoluteFillObject}
                 blurRadius={80}                
 
             />  
-            <View  style={{minHeight:20, backgroundColor:'rgba(255, 255, 255, 0.2)',  paddingVertical:10, paddingHorizontal:15, shadowColor:'grey', shadowOpacity:1, shadowOffset:10}}>
+            <View  style={{minHeight:20, backgroundColor:'rgba(255, 255, 255, 0.2)',  paddingVertical:10, paddingHorizontal:15, shadowColor:'grey', shadowOpacity:1, shadowOffset:10, borderRadius:3}}>
                 {
                     filter ? showFilters()
                            : <Text style={{color:'white'}} onPress={() => setFilter(!filter)} > <FontAwesome name="filter" size={24} color="white" />Show filters</Text> 

@@ -34,7 +34,7 @@ const WishlistScreen = ({navigation}) => {
 
 
     return(
-        <View style={{backgroundColor:'#f5f5f5', paddingHorizontal:20, paddingTop:20}}>   
+        <View style={{backgroundColor:'#f5f5f5', paddingHorizontal:20, paddingTop:10,paddingBottom:100, minHeight: 900}}>   
         <Image 
             source={{uri: 'https://images.pexels.com/photos/2013658/pexels-photo-2013658.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500'}}
             style={StyleSheet.absoluteFillObject}

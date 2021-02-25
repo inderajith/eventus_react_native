@@ -9,34 +9,46 @@ export default ({children}) => {
     const [isVerified, setIsVerified] = useState(false);
     const [myEmail, setMyEmail] = useState('')
     const [settingsData, setSettingsData] = useState({})
+    const [message, setMessage] = useState('')
 
-    const baseUrl = 'http://83b7b814edad.ngrok.io'
+    const baseUrl = 'http://7dfe3d3a80b9.ngrok.io'
 
-    const signin = (email, password) => {    
+    const signin = (email, password, cb) => {            
 
         axios.post(`${baseUrl}/signin`,{email, password})
              .then((response) => {
                  const {msg, verified, mailID} = response.data
-                 setIsVerified(verified)
-                 setMyEmail(email)
-                 AsyncStorage.setItem('email', mailID)
-                 console.log('msg: ', msg);
+                 setMessage(msg)
+                 cb()                     
+                 if(verified)
+                 {
+                     setMyEmail(email)
+                     AsyncStorage.setItem('email', mailID)
+                      setIsVerified(verified)
+                }
              })
              .catch((err) => {
                  console.log('err in authcontext signin: ', err);
              })
     }
 
-    const signup = (username, email, password, interest) => {    
+    const signup = (username, email, password, interest, cb) => {    
 
         axios.post(`${baseUrl}/signup`,{username, email, password, interest})
              .then((response) => {
                  const {msg, verified} = response.data
-                 setIsVerified(verified)
-                 console.log('msg: ', msg);
+                 setMessage(msg)
+                 cb()
+                 if(verified){
+                     setMyEmail(email)
+                     AsyncStorage.setItem('email', email)
+                     setIsVerified(verified)               
+                 }
+
              })
              .catch((err) => {
-                 console.log('err in authcontext signup: ', err);
+                 console.log('err in authcontext signup: ', err);                               
+                 
              })
     }
 
@@ -74,7 +86,7 @@ export default ({children}) => {
     }
 
     return(
-        <authContext.Provider value={{isVerified, baseUrl, myEmail, settingsData, changePassword, setIsVerified, signin, signup, getProfileData, updateProfile, setMyEmail} }>
+        <authContext.Provider value={{isVerified, baseUrl,message, myEmail, settingsData, changePassword, setIsVerified, signin, signup, getProfileData, updateProfile, setMyEmail} }>
             {children}
         </authContext.Provider>
     )
