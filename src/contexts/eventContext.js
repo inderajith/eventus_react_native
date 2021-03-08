@@ -28,7 +28,8 @@ export default ({children}) => {
             {
                 headers:{'Authorization':'Bearer ' + accessToken},
                 params:{
-                    'place.scope':country,                    
+                    'place.scope':country,       
+                    // 'location':[76.958885, 11.017363],
                     'category':category,
                     'q':keywords,
                     'start.gte':startDate,
@@ -43,8 +44,10 @@ export default ({children}) => {
                 const id = item.id 
                 const title = item.title                 
                 const description = item.description.length < 5 ? "No description available" : item.description
-                const latitude = item.location[0]
-                const longitude = item.location[1]
+                let latitude = 78.96288;
+                let longitude = 20.593684;          
+                latitude = item.location[0]
+                longitude = item.location[1]                
                 const date = item.start.slice(0, 10) 
                 const time = item.start.slice(11, 19) == '00:00:00' ? "" : item.start.slice(11, 19)
                 let address = "";
@@ -57,8 +60,7 @@ export default ({children}) => {
                 const eventData = {
                     id,
                     title,
-                    description,
-                    location,
+                    description,                    
                     date,
                     time,
                     address,

@@ -28,10 +28,7 @@ const EventScreen = ({navigation}) => {
     const [showSpinner, setShowSpinner] = useState(true);
     
     
-   
-
-    
-    
+       
     const showDatepicker = () => {
         setShow(true); 
     };
@@ -146,9 +143,7 @@ const EventScreen = ({navigation}) => {
                     {label: 'Coimbatore', value: 'CJB'},                    
                     {label: 'Delhi', value: 'DEL'},                    
                     {label: 'Kerala', value: 'TRV'},
-                    {label: 'Sydney', value: 'YQY'},
-                    
-
+                    {label: 'Sydney', value: 'YQY'},                    
                 ]}
                 defaultValue={'CJB'}                
                 containerStyle={{height: 40}}
@@ -237,7 +232,7 @@ const EventScreen = ({navigation}) => {
             {/* <Divider style={{marginTop:20, zIndex:-3}}/> */}
             <View style={{ position:'relative', zIndex:1}}>            
             {   eventDetails.length == 0 
-                        ? showSpinner ?  <MySpinner height={500} /> : <Text style={{color:'#3399ff', marginLeft:30, marginTop:300, fontSize:25, fontWeight:'bold', textAlign:'center', marginRight:60}}>No events Founds</Text>
+                        ? showSpinner ?  <MySpinner height={500} /> : <Text style={{color:'white', marginLeft:30, marginTop:300, fontSize:25, fontWeight:'bold', textAlign:'center', marginRight:60}}>No events Founds</Text>
                         : <Animated.FlatList
                                         onScroll={Animated.event(
                                             [{nativeEvent: {contentOffset: {y: scrollY}}}],
